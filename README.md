@@ -12,6 +12,28 @@ Specifically, refer to the _Project roadmap_ section to learn about the
 development process of subOS, in addition to the _Ensuring that everybody can
 get involved_ section to learn how to contribute to the subOS project.
 
+## Testdriving subOS
+To run a sandboxed subOS instance on your system, you will need to install the
+dependencies of subOS by running in the root directory of this project:
+
+```bash
+$ npm install
+```
+
+Then, you can start subOS by running:
+
+```bash
+$ npm start -- --user-fs ~/path/to/user/fs
+```
+
+The `--user-fs` argument points to the user filesystem where you want system
+files to be stored. If omitted, then it will be a folder called `subOS` in your
+home directory. If the path does not exist, then it will be created.
+
+Use the `--debug-backend` argument to launch DevTools for debugging the backend
+and HCI layers.
+
+
 ## Contributing
 Opportunities for contributing to the subOS codebase are currently quite
 limited. We plan to expand our opportunities later on in development once we've

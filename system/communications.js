@@ -10,9 +10,22 @@
 const {ipcMain} = require("electron");
 
 const main = require("./main");
+const file = require("./file");
 
 function handleCommand(command, args) {
-    return Promise.resolve("Hello!");
+    switch (command) {        
+        case "file_exists":
+            return file.exists(args.path);
+
+        case "file_getInfo":
+            return file.getInfo(args.path);
+
+        case "file_readFolder":
+            return file.readFolder(args.path);
+
+        default:
+            return Promise.reject();
+    }
 }
 
 ipcMain.on("toSystem", function(event, data) {
