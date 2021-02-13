@@ -1,0 +1,21 @@
+{
+    "name": "subos",
+    "version": "0.1.0",
+    "description": "An operating system built by Subnodal.",
+    "main": "system/main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "repository": "https://github.com/Subnodal/subOS",
+    "keywords": [
+        "Subnodal",
+        "subOS"
+    ],
+    "author": "Subnodal Technologies",
+    "devDependencies": {
+        "electron": "^11.0.2"
+    },
+    "dependencies": {
+        "minimist": "^1.2.5"
+    }
+}
