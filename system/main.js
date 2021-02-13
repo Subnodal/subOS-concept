@@ -11,6 +11,9 @@ const path = require("path");
 const {app, protocol, BrowserWindow} = require("electron");
 const minimist = require("minimist");
 
+const communications = require("./communications");
+
+exports.root = path.join("/", ...require.main.filename.split("/").slice(0, require.main.filename.split("/").length - 2));
 exports.arguments = minimist(process.argv);
 
 app.on("ready", function() {
@@ -18,9 +21,7 @@ app.on("ready", function() {
     protocol.interceptFileProtocol("os", function(request, callback) {
         var url = request.url.substring(5);
 
-        console.log(path.join(require.main.filename, url));
-
-        callback({path: path.join(...require.main.filename.split("/").slice(0, require.main.filename.split("/").length - 2), url)});
+        callback({path: path.join(exports.root, url)});
     });
 
     exports.mainWindow = new BrowserWindow({
@@ -29,7 +30,10 @@ app.on("ready", function() {
         fullscreenable: true,
         webPreferences: {
             title: "subOS System Runtime",
-            devTools: true
+            devTools: true,
+            nodeIntegration: false,
+            contextIsolation: true,
+            preload: path.join(exports.root, "system", "preload.js")
         },
         useContentSize: true
     });
