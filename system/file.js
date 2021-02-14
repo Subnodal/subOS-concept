@@ -98,7 +98,7 @@ exports.readFile = function(path) {
         return Promise.reject(getAccessStatus(path, true, true, false, "file"));
     }
 
-    return Promise.resolve(fs.readFileSync(getFilesystemPath(path), "utf-8"));
+    return Promise.resolve(fs.readFileSync(getFilesystemPath(path), "utf8"));
 };
 
 exports.readFileBinary = function(path, start, size) {
