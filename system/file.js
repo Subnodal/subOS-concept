@@ -98,7 +98,7 @@ exports.readFile = function(path) {
         return Promise.reject(getAccessStatus(path, true, true, false, "file"));
     }
 
-    return fs.readFileSync(getFilesystemPath(path), "utf-8");
+    return Promise.resolve(fs.readFileSync(getFilesystemPath(path), "utf-8"));
 };
 
 exports.readFileBinary = function(path, start, size) {
@@ -106,7 +106,7 @@ exports.readFileBinary = function(path, start, size) {
         return Promise.reject(getAccessStatus(path, true, true, false, "file"));
     }
 
-    var stream = fs.createReadStream(path, {start, end: start + size});
+    var stream = fs.createReadStream(getFilesystemPath(path), {start, end: start + size});
     var buffer = new Buffer.alloc(size);
     var bufferPointer = 0;
 
@@ -123,4 +123,22 @@ exports.readFileBinary = function(path, start, size) {
             resolve(buffer);
         });
     });
+};
+
+exports.writeFile = function(path, data, append = false) {
+    if (getAccessStatus(path, true, false, true, "file") != accessStatus.ACCESSIBLE) {
+        return Promise.reject(getAccessStatus(path, true, false, true, "file"));
+    }
+
+    if (append) {
+        fs.appendFileSync(getFilesystemPath(path), data);
+    } else {
+        fs.writeFileSync(getFilesystemPath(path), data);
+    }
+
+    return Promise.resolve();
+};
+
+exports.writeFileBinary = function(path, data, append = false) {
+    return exports.writeFile(path, data, append); // `fs.writeFileSync` and `fs.appendFileSync` also accept buffers
 };

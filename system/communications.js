@@ -23,6 +23,18 @@ function handleCommand(command, args) {
         case "file_readFolder":
             return file.readFolder(args.path);
 
+        case "file_readFile":
+            return file.readFile(args.path);
+        
+        case "file_readFileBinary":
+            return file.readFileBinary(args.path, args.start, args.size);
+
+        case "file_writeFile":
+            return file.writeFile(args.path, args.data, args.append);
+
+        case "file_writeFileBinary":
+            return file.writeFileBinary(args.path, args.data, args.append);
+
         default:
             return Promise.reject();
     }

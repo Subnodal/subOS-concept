@@ -48,3 +48,24 @@ schema:
 ## `file_readFolder`
 Given a folder path as argument `path`, list the names of the nodes in that
 folder.
+
+## `file_readFile`
+Given a file path as argument `path`, read the text contents of that file.
+
+## `file_readFileBinary`
+Given a file path as argument `path`, read the binary contents of that file as
+a `Buffer`.
+
+## `file_writeFile`
+Given a file path as argument `path` and textual data as argument `data`, write
+the data to the file.
+
+Set the `append` argument to `true` to append the data to the end of the file
+instead of overwriting it.
+
+## `file_writeFileBinary`
+Given a file path as argument `path` and data in a `Buffer` as argument `data`,
+write the data to the file.
+
+Set the `append` argument to `true` to append the data to the end of the file
+instead of overwriting it.
