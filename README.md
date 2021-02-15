@@ -33,6 +33,11 @@ home directory. If the path does not exist, then it will be created.
 Use the `--debug-backend` argument to launch DevTools for debugging the backend
 and HCI layers.
 
+Use the `--reset` argument to clear the user filesystem and reload all system
+files (thus resetting the filesystem state). Use `--keep-changes` if you want to
+keep all user changes to system files intact when relaunching (this argument
+will not be effective if `--reset` is supplied).
+
 
 ## Contributing
 Opportunities for contributing to the subOS codebase are currently quite

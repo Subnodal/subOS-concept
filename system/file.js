@@ -170,8 +170,8 @@ exports.readFileBinary = function(path, start, size) {
 };
 
 exports.writeFile = function(path, data, append = false) {
-    if (getAccessStatus(path, false, false, true, "file") != accessStatus.ACCESSIBLE) {
-        return Promise.reject(getAccessStatus(path, false, false, true, "file"));
+    if (fs.existsSync(getFilesystemPath) && getAccessStatus(path, false, true, "file") != accessStatus.ACCESSIBLE) {
+        return Promise.reject(getAccessStatus(path, false, true, "file"));
     }
 
     if (append) {

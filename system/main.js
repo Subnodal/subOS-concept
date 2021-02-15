@@ -29,9 +29,7 @@ app.on("ready", function() {
         if (fs.existsSync(exports.userFs)) {
             fs.rmdirSync(exports.userFs, {recursive: true});
         }
-    }
-
-    if (!fs.existsSync(exports.userFs)) {
+    } else if (!(exports.arguments["keep-changes"])) {
         fse.copySync(path.join(exports.root, "userfs"), exports.userFs);
     }
 
