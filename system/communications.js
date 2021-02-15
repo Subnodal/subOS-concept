@@ -20,8 +20,17 @@ function handleCommand(command, args) {
         case "file_getInfo":
             return file.getInfo(args.path);
 
+        case "file_rename":
+            return file.rename(args.oldPath, args.newPath);
+
         case "file_readFolder":
             return file.readFolder(args.path);
+
+        case "file_createFolder":
+            return file.createFolder(args.path);
+
+        case "file_deleteFolder":
+            return file.deleteFolder(args.path);
 
         case "file_readFile":
             return file.readFile(args.path);
@@ -34,6 +43,9 @@ function handleCommand(command, args) {
 
         case "file_writeFileBinary":
             return file.writeFileBinary(args.path, args.data, args.append);
+
+        case "file_deleteFile":
+            return file.deleteFile(args.path);
 
         default:
             return Promise.reject();

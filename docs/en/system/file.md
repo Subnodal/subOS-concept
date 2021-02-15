@@ -8,14 +8,15 @@ These status codes should be defined in both the filesystem exposure as well as
 the File API. File API will then read the status code and throw the appropriate
 error, if any.
 
-| Identifier     | Code | Meaning                                                    |
-|----------------|------|------------------------------------------------------------|
-| `ACCESSIBLE`   |  `0` | The requested node is accessible per the given constraints |
-| `NONEXISTENT`  | `-1` | The requested node does not exist                          |
-| `NOT_READABLE` | `-2` | The requested node cannot be read                          |
-| `NOT_WRITABLE` | `-3` | The requested node cannot be written to                    |
-| `NOT_FILE`     | `-4` | The requested node is not a file                           |
-| `NOT_FOLDER`   | `-5` | The requested node is not a folder                         |
+| Identifier     | Code | Meaning                                                      |
+|----------------|------|--------------------------------------------------------------|
+| `ACCESSIBLE`   |  `0` | The requested node is accessible per the given constraints   |
+| `UNKNOWN`      | `-1` | The requested node could not be modified for unknown reasons |
+| `NONEXISTENT`  | `-2` | The requested node does not exist                            |
+| `NOT_READABLE` | `-3` | The requested node cannot be read                            |
+| `NOT_WRITABLE` | `-4` | The requested node cannot be written to                      |
+| `NOT_FILE`     | `-5` | The requested node is not a file                             |
+| `NOT_FOLDER`   | `-6` | The requested node is not a folder                           |
 
 ## `file_getInfo`
 Given a node path as argument `path`, get the associated information about the
@@ -45,9 +46,20 @@ schema:
   block (usually 4,096 bytes in size) and not the size of the node's contents
   since folders simply exist as links
 
+## `file_rename`
+Given an existing node path as argument `oldPath` and new node path as argument
+`newPath`, rename an existing node sot hat it can be accessed via the specified
+new path.
+
 ## `file_readFolder`
 Given a folder path as argument `path`, list the names of the nodes in that
 folder.
+
+## `file_createFolder`
+Given a folder path as argument `path`, create a new folder as that path.
+
+## `file_deleteFolder`
+Given a folder path as argument `path`, delete the folder and its contents.
 
 ## `file_readFile`
 Given a file path as argument `path`, read the text contents of that file.
@@ -69,3 +81,6 @@ write the data to the file.
 
 Set the `append` argument to `true` to append the data to the end of the file
 instead of overwriting it.
+
+## `file_deleteFile`
+Given a file path as argument `path`, delete the file.

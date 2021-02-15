@@ -16,11 +16,13 @@ const main = require("./main");
 
 const accessStatus = {
     ACCESSIBLE: 0,
-    NONEXISTENT: -1,
-    NOT_READABLE: -2,
-    NOT_WRITABLE: -3,
-    NOT_FILE: -4,
-    NOT_FOLDER: -5
+    UNKNOWN: -1,
+    NONEXISTENT: -2,
+    NOT_READABLE: -3,
+    NOT_WRITABLE: -4,
+    NOT_FILE: -5,
+    NOT_FOLDER: -6,
+    ALREADY_EXISTS: -7
 };
 
 function getFilesystemPath(localPath) {
@@ -85,12 +87,54 @@ exports.getInfo = function(path) {
     });
 };
 
+exports.rename = function(oldPath, newPath) {
+    if (getAccessStatus(oldPath, true, true, false, null) != accessStatus.ACCESSIBLE) {
+        return Promise.reject(getAccessStatus(path, true, true, false, null));
+    }
+
+    if (fs.existsSync(getFilesystemPath(newPath))) {
+        return Promise.reject(accessStatus.ALREADY_EXISTS);
+    }
+
+    fs.rename(getFilesystemPath(oldPath), getFilesystemPath(newPath));
+
+    return Promise.resolve();
+};
+
 exports.readFolder = function(path) {
     if (getAccessStatus(path, true, true, false, "folder") != accessStatus.ACCESSIBLE) {
         return Promise.reject(getAccessStatus(path, true, true, false, "folder"));
     }
 
     return Promise.resolve(fs.readdirSync(getFilesystemPath(path)));
+};
+
+exports.createFolder = function(path) {
+    if (getAccessStatus(path + "/..", false, true, true, "folder") != accessStatus.ACCESSIBLE) {
+        return Promise.reject(getAccessStatus(path + "/..", false, true, true, "folder"));
+    }
+
+    if (fs.existsSync(getFilesystemPath(path))) {
+        return Promise.reject(accessStatus.ALREADY_EXISTS);
+    }
+
+    fs.mkdirSync(getFilesystemPath(path));
+
+    return Promise.resolve();
+};
+
+exports.deleteFolder = function(path) {
+    if (getAccessStatus(path, true, false, true, "folder") != accessStatus.ACCESSIBLE) {
+        return Promise.reject(getAccessStatus(path, true, false, true, "folder"));
+    }
+
+    try {
+        fs.rmdirSync(getFilesystemPath(path), {recursive: true});
+    } catch (e) {
+        return Promise.reject(accessStatus.UNKNOWN);
+    }
+
+    return Promise.resolve();
 };
 
 exports.readFile = function(path) {
@@ -126,8 +170,8 @@ exports.readFileBinary = function(path, start, size) {
 };
 
 exports.writeFile = function(path, data, append = false) {
-    if (getAccessStatus(path, true, false, true, "file") != accessStatus.ACCESSIBLE) {
-        return Promise.reject(getAccessStatus(path, true, false, true, "file"));
+    if (getAccessStatus(path, false, false, true, "file") != accessStatus.ACCESSIBLE) {
+        return Promise.reject(getAccessStatus(path, false, false, true, "file"));
     }
 
     if (append) {
@@ -141,4 +185,12 @@ exports.writeFile = function(path, data, append = false) {
 
 exports.writeFileBinary = function(path, data, append = false) {
     return exports.writeFile(path, data, append); // `fs.writeFileSync` and `fs.appendFileSync` also accept buffers
+};
+
+exports.deleteFile = function(path) {
+    if (getAccessStatus(path, true, false, true, "file") != accessStatus.ACCESSIBLE) {
+        return Promise.reject(getAccessStatus(path, true, false, true, "file"));
+    }
+
+    return exports.unlinkSync(getFilesystemPath(path));
 };
