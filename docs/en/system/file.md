@@ -57,6 +57,7 @@ folder.
 
 ## `file_createFolder`
 Given a folder path as argument `path`, create a new folder as that path.
+Folders are created recursively, and so not all of the path needs to exist.
 
 ## `file_deleteFolder`
 Given a folder path as argument `path`, delete the folder and its contents.

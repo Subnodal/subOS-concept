@@ -118,7 +118,7 @@ exports.createFolder = function(path) {
         return Promise.reject(accessStatus.ALREADY_EXISTS);
     }
 
-    fs.mkdirSync(getFilesystemPath(path));
+    fs.mkdirSync(getFilesystemPath(path), {recursive: true});
 
     return Promise.resolve();
 };
