@@ -1,0 +1,11 @@
+{
+    "identifier": "com.subnodal.subos.startup",
+    "name": {
+        "en_GB": "Startup Management"
+    },
+    "description": {
+        "en_GB": "Starts configured applications when the system boots."
+    },
+    "defaultLocale": "en_GB",
+    "actions": ["debug"]
+}

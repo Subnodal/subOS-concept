@@ -46,7 +46,8 @@ of this file's contents (unminified and commented for easier reading):
                 "/packages": ["write"],
                 "/applications": ["write"],
                 "/users": ["read", "write"]
-            }
+            },
+            "actions": ["debug"]
         },
         "protected": {
             "actions": ["-camera!"],
@@ -86,11 +87,23 @@ The system defines some default permissions which are not stored in
 `permissions.json` (to ensure that permissions can be added/removed between
 system updates):
 
+Path access for all users:
 * `/`: `read`
 * `/system`: `read`, `-write`
 * `/system/users.json`: `-read`
 * `/system/permissions.json`: `-read`
 * `/users`: `-read`, `-write`
+
+Action access for all users:
+* `camera`
+* `microphone`
+* `notifications`
+* `sensing`
+* `connectivity`
+* `location`
+
+Action access for `com.subnodal.subos.startup`:
+* `debug`
 
 ## Entity permission checking order
 If a user is being checked for their permissions, then their group permissions
