@@ -48,7 +48,7 @@ schema:
 
 ## `file_rename`
 Given an existing node path as argument `oldPath` and new node path as argument
-`newPath`, rename an existing node sot hat it can be accessed via the specified
+`newPath`, rename an existing node so that it can be accessed via the specified
 new path.
 
 ## `file_readFolder`

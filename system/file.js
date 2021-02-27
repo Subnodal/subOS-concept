@@ -14,6 +14,7 @@ const path = require("path");
 
 const main = require("./main");
 
+// See /backend/enums.js
 const accessStatus = {
     ACCESSIBLE: 0,
     UNKNOWN: -1,
@@ -54,11 +55,11 @@ function getAccessStatus(localPath, exists = true, read = true, write = false, t
         return accessStatus.NOT_WRITABLE;
     }
 
-    if (fs.statSync(getFilesystemPath(localPath)).isFile() && type != null && type != "file") {
+    if (fs.statSync(getFilesystemPath(localPath)).isDirectory() && type != null && type == "file") {
         return accessStatus.NOT_FILE;
     }
 
-    if (fs.statSync(getFilesystemPath(localPath)).isDirectory() && type != null && type != "folder") {
+    if (fs.statSync(getFilesystemPath(localPath)).isFile() && type != null && type == "folder") {
         return accessStatus.NOT_FOLDER;
     }
 

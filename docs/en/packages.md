@@ -14,11 +14,11 @@ Please see
 [the subPack documentation](https://github.com/Subnodal/subPack/blob/main/README.md#writing-subpackjson)
 to learn how to format the `subpack.json` file.
 
-> **Note:** The use of URLs in the `dependencies` keypair value list inside of
-> `subpack.json` is discouraged. If a URL dependency is used, it will be cached
-> in `/packages/.urlcache` and used until the module is updated. This is to
-> ensure that URL dependencies are available when there is no connection to the
-> internet, or if the URL destination no longer works.
+> **Note:** The use of HTTP URLs in the `dependencies` keypair value list inside
+> of `subpack.json` is discouraged. If a URL dependency is used, it will be
+> cached in `/packages/.urlcache` and used until the module is updated. This is
+> to ensure that URL dependencies are available when there is no connection to
+> the internet, or if the URL destination no longer works.
 
 ## subPack and its API
 subPack is the built-in package manager for subOS. The equivalent for non-subOS
