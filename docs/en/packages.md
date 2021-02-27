@@ -20,6 +20,12 @@ to learn how to format the `subpack.json` file.
 > to ensure that URL dependencies are available when there is no connection to
 > the internet, or if the URL destination no longer works.
 
+subOS supports the `subpack://` URI scheme for retrieving dependencies which are
+other installed packages. These dependency packages are installed by subPack
+along with their dependent package. Dependencies that resolve to other packages
+cannot be defined in the `modules` keypair value list inside of `subpack.json`,
+but they can exist in the `devDependencies` keypair value list.
+
 ## subPack and its API
 subPack is the built-in package manager for subOS. The equivalent for non-subOS
 operating systems is available in the

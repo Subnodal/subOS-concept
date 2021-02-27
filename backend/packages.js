@@ -106,16 +106,20 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
         @param identifier <String> The namespace identifier of the package to get
         @returns <Promise> `Promise` which is resolved with the path, or rejected if the package path could not be determined
     */
-    exports.getPackagePath = function(identifier) {
+    exports.getPackagePath = function(identifier, _originalIdentifier = null) {
         if (!exports.namespaceIdentifierIsValid(identifier)) {
-            throw new TypeError("Namespace identifier is invalid");
+            return Promise.reject({code: enums.fileAccessStatus.UNKNOWN, message: "Namespace identifier is invalid"});
+        }
+
+        if (_originalIdentifier == null) {
+            _originalIdentifier = identifier;
         }
 
         return system.execute("file_readFolder", {path: "/packages/" + identifier}).then(function(data) {
             return Promise.resolve("/packages/" + identifier);
         }).catch(function(error) {
             if (error != enums.fileAccessStatus.NONEXISTENT || identifier.split(".").length == 2) {
-                return Promise.reject({code: error, message: "Package path could not be resolved"});
+                return Promise.reject({code: error, path: "/packages/" + _originalIdentifier, message: "Package path could not be resolved"});
             }
 
             identifier = identifier.split(".");
@@ -124,7 +128,7 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
 
             identifier = identifier.join(".");
 
-            return exports.getPackagePath(identifier); // Find package by parent identifier
+            return exports.getPackagePath(identifier, _originalIdentifier); // Find package by parent identifier
         });
     };
 
@@ -163,6 +167,7 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
     function getDependencyPromise(dependencyPath, devDependencies, maxDependencyDepth) {
         if (dependencyPath.startsWith("http://") || dependencyPath.startsWith("https://")) {
             // TODO: Implement URL-based module dependencies
+            // Dependent on a requests exposure
             throw new Error("URL-based module dependencies are not implemented yet");
         }
 
@@ -236,7 +241,7 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
         }).then(function(modules) {
             return Promise.resolve(modules.join(""));
         }).catch(function(error) {
-            return Promise.reject({...error, path: packagePath});
+            return Promise.reject({path: packagePath, ...error});
         });
     };
 });
