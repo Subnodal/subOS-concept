@@ -159,5 +159,85 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
             }
         });
     };
+
+    function getDependencyPromise(dependencyPath, devDependencies, maxDependencyDepth) {
+        if (dependencyPath.startsWith("http://") || dependencyPath.startsWith("https://")) {
+            // TODO: Implement URL-based module dependencies
+            throw new Error("URL-based module dependencies are not implemented yet");
+        }
+
+        if (dependencyPath.startsWith("subpack://")) {
+            if (maxDependencyDepth == 0) {
+                return Promise.resolve(""); // Silently don't bundle; there could be a circular dependency
+            }
+
+            return exports.bundlePackage(dependencyPath.split("/")[2], devDependencies, maxDependencyDepth - 1);
+        }
+
+        return system.execute("file_readFile", {path: packagePath + "/" + dependencyPath}).catch(function() {
+            return Promise.reject(exports.packageContentsRetrievalStatus.UNKNOWN);
+        });
+    }
+
+    function getModulePromise(packagePath, modulePath) {
+        return system.execute("file_readFile", {path: packagePath + "/" + modulePath}).catch(function() {
+            return Promise.reject(exports.packageContentsRetrievalStatus.UNKNOWN);
+        });
+    }
+
+    /*
+        @name bundlePackage
+        Get the bundled JavaScript code from a package with a given namespace
+        identifier. Can be an identifier which references a module of a package,
+        and not just the identifier itself.
+            ~~~~
+            If the returned `Promise` is rejected, an object containing an enum
+            value from `packageContentsRetrievalStatus` is supplied as a reason.
+        @param identifier <String> The namespace identifier of the package to bundle
+        @param devDependencies <Boolean = false> Whether to include dev dependencies when bundling
+        @param maxDependencyDepth <Number = 10> The maximum recursion depth allowed for bundling dependencies
+        @returns <Promise> `Promise` which is resolved with bundled JavaScript code, or rejected if the bundle could not be retrieved
+    */
+    exports.bundlePackage = function(identifier, devDependencies = false, maxDependencyDepth = 10) {
+        var packagePath;
+
+        return exports.getPackagePath(identifier).then(function(path) {
+            packagePath = path;
+
+            return exports.getPackageManifest(identifier);
+        }).then(function(data) {
+            var allModules = [];
+
+            data.dependencies = data.dependencies || [];
+            data.devDependencies = data.devDependencies || [];
+            data.modules = data.modules || [];
+
+            if (typeof(data.dependencies) != "object") {
+                return Promise.reject({code: exports.packageContentsRetrievalStatus.MALFORMED, path: packagePath + "/subpack.json", message: "`dependencies` is not a list of dependencies"});
+            }
+
+            if (typeof(data.devDependencies) != "object") {
+                return Promise.reject({code: exports.packageContentsRetrievalStatus.MALFORMED, path: packagePath + "/subpack.json", message: "`devDependencies` is not a list of dev dependencies"});
+            }
+
+            if (typeof(data.dependencies) != "object") {
+                return Promise.reject({code: exports.packageContentsRetrievalStatus.MALFORMED, path: packagePath + "/subpack.json", message: "`modules` is not a list of modules"});
+            }
+
+            allModules = allModules.concat(data.dependencies.map((modulePath) => getDependencyPromise(modulePath, devDependencies, maxDependencyDepth)));
+
+            if (devDependencies) {
+                allModules = allModules.concat(data.devDependencies.map((modulePath) => getDependencyPromise(modulePath, devDependencies, maxDependencyDepth)));
+            }
+
+            allModules = allModules.concat(data.modules.map((modulePath) => getModulePromise(packagePath, modulePath)));
+
+            return Promise.all(allModules);
+        }).then(function(modules) {
+            return Promise.resolve(modules.join(""));
+        }).catch(function(error) {
+            return Promise.reject({...error, path: packagePath});
+        });
+    };
 });
 // @endnamespace

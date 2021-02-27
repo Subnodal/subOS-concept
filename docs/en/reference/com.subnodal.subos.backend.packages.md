@@ -1,4 +1,18 @@
 # com.subnodal.subos.backend.packages
+## ▶️ `bundlePackage`
+`function` · Get the bundled JavaScript code from a package with a given namespace identifier. Can be an identifier which references a module of a package, and not just the identifier itself.
+
+
+If the returned `Promise` is rejected, an object containing an enum
+value from `packageContentsRetrievalStatus` is supplied as a reason.
+
+**Parameters:**
+* **`identifier`** (`String`): The namespace identifier of the package to bundle
+* **`devDependencies`** (`Boolean` = `false`): Whether to include dev dependencies when bundling
+* **`maxDependencyDepth`** (`Number` = `10`): The maximum recursion depth allowed for bundling dependencies
+
+**Returns:** `Promise` · `Promise` which is resolved with bundled JavaScript code, or rejected if the bundle could not be retrieved
+
 ## ▶️ `getPackageManifest`
 `function` · Get the manifest of a package from a given namespace identifier. Can be an identifier which references a module of a package, and not just the identifier itself.
 
