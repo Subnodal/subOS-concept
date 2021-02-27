@@ -43,6 +43,7 @@ of this file's contents (unminified and commented for easier reading):
         },
         "superusers": {
             "paths": {
+                "/packages": ["write"],
                 "/applications": ["write"],
                 "/users": ["read", "write"]
             }
