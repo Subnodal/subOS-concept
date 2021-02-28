@@ -1,6 +1,6 @@
 # Packages
 subOS uses package management as a way of maintaining various system components.
-A _package_ is a collection of code namespaces such as libraries which can be
+A **package** is a collection of code namespaces such as libraries which can be
 accessed by any application through the subPack package manager and built-in
 APIs.
 

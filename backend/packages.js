@@ -61,10 +61,19 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
             identifier must have at least a top level and a hostname (eg.
             `com.example`). To prevent confusion, an identifier cannot contain
             any uppercase, non-Latin or diacriticised characters.
+            ~~~~
+            Namespace identifiers cannot be longer than 128 characters. This is
+            to ensure that filenames which append extensions to the identifier
+            are compatible with most filesystems.
         @param identifier <String> The namespace identifier to validate
         @returns <Boolean> Whether the given namespace identifier is valid
     */
     exports.namespaceIdentifierIsValid = function(identifier) {
+        // Identifier cannot be longer than 128 characters
+        if (identifier.length > 128) {
+            return false;
+        }
+
         // Identifier must only include allowed characters
         if (!/^[a-z0-9.-]+$/.test(identifier)) {
             return false;
@@ -81,8 +90,8 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
             return false;
         }
 
-        // Identifier cannot start or end with a hyphen
-        if (/^-/.test(identifier) || /-$/.test(identifier)) {
+        // Identifier cannot start or end with a full stop or hyphen
+        if (/^[\.-]/.test(identifier) || /[\.-]$/.test(identifier)) {
             return false;
         }
 

@@ -38,6 +38,8 @@ files (thus resetting the filesystem state). Use `--keep-changes` if you want to
 keep all user changes to system files intact when relaunching (this argument
 will not be effective if `--reset` is supplied).
 
+Use the `--test` argument to start subOS tests at boot. This will open the test
+console and display a list of passed, failed and running tests.
 
 ## Contributing
 Opportunities for contributing to the subOS codebase are currently quite

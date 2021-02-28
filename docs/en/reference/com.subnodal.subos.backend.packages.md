@@ -51,6 +51,11 @@ identifier must have at least a top level and a hostname (eg.
 `com.example`). To prevent confusion, an identifier cannot contain
 any uppercase, non-Latin or diacriticised characters.
 
+
+Namespace identifiers cannot be longer than 128 characters. This is
+to ensure that filenames which append extensions to the identifier
+are compatible with most filesystems.
+
 **Parameters:**
 * **`identifier`** (`String`): The namespace identifier to validate
 

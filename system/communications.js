@@ -13,7 +13,10 @@ const main = require("./main");
 const file = require("./file");
 
 function handleCommand(command, args) {
-    switch (command) {        
+    switch (command) {       
+        case "arguments":
+            return Promise.resolve(main.arguments);
+ 
         case "file_exists":
             return file.exists(args.path);
 

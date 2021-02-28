@@ -27,6 +27,10 @@ was a problem).
 Read more about function-specific exposures:
 * [Filesystem exposure](file.md)
 
+Non-function-specific exposures:
+* `arguments` returns a `Promise` which resolves with an object containing the
+  arguments supplied to subOS at boot.
+
 ## Exposure security
 Exposures do not do any type checking. Type checking is done in the backend
 layer when an in-process API dispatches a request. Exposures _do_, however,
