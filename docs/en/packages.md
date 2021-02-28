@@ -29,7 +29,7 @@ but they can exist in the `devDependencies` keypair value list.
 ## subPack and its API
 subPack is the built-in package manager for subOS. The equivalent for non-subOS
 operating systems is available in the
-[subPack repository for Node.JS](https://github.com/Subnodal/subPack).
+[subPack repository for Node.js](https://github.com/Subnodal/subPack).
 
 subPack's responsibility is to install and uninstall packages, bundle packages
 into standalone minified JavaScript files, and automatically import required
