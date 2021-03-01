@@ -1,6 +1,7 @@
 {
     "identifier": "com.subnodal.subos.startup",
     "version": "0.1.0",
+    "versionNumber": 0,
     "modules": [
         "main.js"
     ]
