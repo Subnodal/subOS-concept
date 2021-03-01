@@ -8,6 +8,7 @@ value from `packageContentsRetrievalStatus` is supplied as a reason.
 
 **Parameters:**
 * **`identifier`** (`String`): The namespace identifier of the package to bundle
+* **`versionNumber`** (`Number | null` = `null`): The version number of the package to bundle, or latest if is `null`
 * **`devDependencies`** (`Boolean` = `false`): Whether to include dev dependencies when bundling
 * **`maxDependencyDepth`** (`Number` = `10`): The maximum recursion depth allowed for bundling dependencies
 
@@ -22,6 +23,7 @@ value from `packageContentsRetrievalStatus` is supplied as a reason.
 
 **Parameters:**
 * **`identifier`** (`String`): The namespace identifier of the package to get the manifest of
+* **`versionNumber`** (`Number | null` = `null`): The version number of the package to get the manifest of, or latest if is `null`
 
 **Returns:** `Promise` · `Promise` which is resolved with the manifest contents, or rejected if the package contents could not be retrieved
 
@@ -35,6 +37,7 @@ supplied as a reason.
 
 **Parameters:**
 * **`identifier`** (`String`): The namespace identifier of the package to get
+* **`versionNumber`** (`Number | null` = `null`): The version number of the package to get, or latest if is `null`
 
 **Returns:** `Promise` · `Promise` which is resolved with the path, or rejected if the package path could not be determined
 
