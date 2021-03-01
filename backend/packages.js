@@ -113,9 +113,10 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
             value from `(com.subnodal.subos.backend.enums).fileAccessStatus` is
             supplied as a reason.
         @param identifier <String> The namespace identifier of the package to get
+        @param versionNumber <Number | null = null> The version number of the package to get, or latest if is `null`
         @returns <Promise> `Promise` which is resolved with the path, or rejected if the package path could not be determined
     */
-    exports.getPackagePath = function(identifier, _originalIdentifier = null) {
+    exports.getPackagePath = function(identifier, versionNumber = null, _originalIdentifier = null) {
         if (!exports.namespaceIdentifierIsValid(identifier)) {
             return Promise.reject({code: enums.fileAccessStatus.UNKNOWN, message: "Namespace identifier is invalid"});
         }
@@ -125,7 +126,19 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
         }
 
         return system.execute("file_readFolder", {path: "/packages/" + identifier}).then(function(data) {
-            return Promise.resolve("/packages/" + identifier);
+            var versionNumbers = data.map((i) => Number(i) || 0).sort((a, b) => a - b);
+
+            if (versionNumbers.length == 0) {
+                return Promise.reject({code: enums.fileAccessStatus.NONEXISTENT, path: "/packages/" + identifier + "/" + String(versionNumber), message: "Package has no versions"});
+            }
+
+            var latestVersionNumber = versionNumbers[versionNumbers.length - 1];
+
+            if (versionNumber != null && !versionNumbers.includes(versionNumber)) {
+                return Promise.reject({code: enums.fileAccessStatus.NONEXISTENT, path: "/packages/" + identifier + "/" + String(versionNumber), message: "Package does not have this version"});
+            }
+
+            return Promise.resolve("/packages/" + identifier + "/" + String(versionNumber != null ? versionNumber : latestVersionNumber));
         }).catch(function(error) {
             if (error != enums.fileAccessStatus.NONEXISTENT || identifier.split(".").length == 2) {
                 return Promise.reject({code: error, path: "/packages/" + _originalIdentifier, message: "Package path could not be resolved"});
@@ -137,7 +150,7 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
 
             identifier = identifier.join(".");
 
-            return exports.getPackagePath(identifier, _originalIdentifier); // Find package by parent identifier
+            return exports.getPackagePath(identifier, versionNumber, _originalIdentifier); // Find package by parent identifier
         });
     };
 
@@ -150,10 +163,11 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
             If the returned `Promise` is rejected, an object containing an enum
             value from `packageContentsRetrievalStatus` is supplied as a reason.
         @param identifier <String> The namespace identifier of the package to get the manifest of
+        @param versionNumber <Number | null = null> The version number of the package to get the manifest of, or latest if is `null`
         @returns <Promise> `Promise` which is resolved with the manifest contents, or rejected if the package contents could not be retrieved
     */
-    exports.getPackageManifest = function(identifier) {
-        return exports.getPackagePath(identifier).then(function(path) {
+    exports.getPackageManifest = function(identifier, versionNumber = null) {
+        return exports.getPackagePath(identifier, versionNumber).then(function(path) {
             return system.execute("file_readFile", {path: path + "/subpack.json"});
         }).catch(function(error) {
             return Promise.reject({
@@ -208,14 +222,15 @@ namespace("com.subnodal.subos.backend.packages", function(exports) {
             If the returned `Promise` is rejected, an object containing an enum
             value from `packageContentsRetrievalStatus` is supplied as a reason.
         @param identifier <String> The namespace identifier of the package to bundle
+        @param versionNumber <Number | null = null> The version number of the package to bundle, or latest if is `null`
         @param devDependencies <Boolean = false> Whether to include dev dependencies when bundling
         @param maxDependencyDepth <Number = 10> The maximum recursion depth allowed for bundling dependencies
         @returns <Promise> `Promise` which is resolved with bundled JavaScript code, or rejected if the bundle could not be retrieved
     */
-    exports.bundlePackage = function(identifier, devDependencies = false, maxDependencyDepth = 10) {
+    exports.bundlePackage = function(identifier, versionNumber = null, devDependencies = false, maxDependencyDepth = 10) {
         var packagePath;
 
-        return exports.getPackagePath(identifier).then(function(path) {
+        return exports.getPackagePath(identifier, versionNumber).then(function(path) {
             packagePath = path;
 
             return exports.getPackageManifest(identifier);
