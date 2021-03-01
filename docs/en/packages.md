@@ -6,9 +6,13 @@ APIs.
 
 Packages are stored in the `/packages` folder of the user filesystem
 (`/userfs/packages` in the repo). A package is contained in a folder which is
-named as the package's root namespace identifier (eg. `com.example.mymodule`)
-and contains a manifest file (named `subpack.json`) along with the relevant
-JavaScript module files.
+named as the package's root namespace identifier (eg. `com.example.mypackage`)
+and contains a folder with a given version number that contains the manifest
+file (named `subpack.json`) along with the relevant JavaScript module files.
+
+So, for example, the manifest for a package named `com.example.mypackage` at
+version number `10` would be located at
+`/packages/com.example.mypackage/10/subpack.json`.
 
 Please see
 [the subPack documentation](https://github.com/Subnodal/subPack/blob/main/README.md#writing-subpackjson)
