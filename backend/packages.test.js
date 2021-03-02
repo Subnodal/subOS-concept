@@ -14,7 +14,8 @@ namespace("com.subnodal.subos.backend.packages.test", function(exports) {
     const TEST_PACKAGE_IDENTIFIER = "com.subnodal.subos.meta.testpackage";
     const TEST_PACKAGE_VERNUM_OLDEST = 0;
     const TEST_PACKAGE_VERNUM_INVALID_MANIFEST = 1;
-    const TEST_PACKAGE_VERNUM_LATEST = 2;
+    const TEST_PACKAGE_VERNUM_NONEXISTENT_MANIFEST = 2;
+    const TEST_PACKAGE_VERNUM_LATEST = 3;
 
     function createTestPackageContents(versionNumber) {
         switch (versionNumber) {
@@ -27,6 +28,9 @@ namespace("com.subnodal.subos.backend.packages.test", function(exports) {
 
             case TEST_PACKAGE_VERNUM_INVALID_MANIFEST:
                 return system.execute("file_writeFile", {path: `/packages/${TEST_PACKAGE_IDENTIFIER}/${versionNumber}/subpack.json`, data: `Invalid!`});
+
+            case TEST_PACKAGE_VERNUM_NONEXISTENT_MANIFEST:
+                return Promise.resolve();
 
             case TEST_PACKAGE_VERNUM_LATEST:
                 return system.execute("file_writeFile", {path: `/packages/${TEST_PACKAGE_IDENTIFIER}/${versionNumber}/subpack.json`, data: JSON.stringify({
@@ -84,8 +88,6 @@ namespace("com.subnodal.subos.backend.packages.test", function(exports) {
     var namespaceIdentifierValidationConsecutiveHyphenFullStop = new subTest.Test(() => packages.namespaceIdentifierIsValid("com.example.mypackage-")).shouldEqual(false);
     var namespaceIdentifierValidationAtLeastTopLevel = new subTest.Test(() => packages.namespaceIdentifierIsValid("example")).shouldEqual(false);
 
-    // TODO: Write tests for selecting package versions
-
     var getPackagePathSuccess = new subTest.Test(function() {
         return packages.getPackagePath(TEST_PACKAGE_IDENTIFIER);
     }).shouldResolveTo(`/packages/${TEST_PACKAGE_IDENTIFIER}/${TEST_PACKAGE_VERNUM_LATEST}`).after(namespaceIdentifierValidationBasic);
@@ -106,6 +108,10 @@ namespace("com.subnodal.subos.backend.packages.test", function(exports) {
         return packages.getPackagePath("com.subnodal.subos.meta.nonexistentpackage");
     }).shouldReject().after(getPackagePathSuccess);
 
+    var getPackagePathOld = new subTest.Test(function() {
+        return packages.getPackagePath(TEST_PACKAGE_IDENTIFIER, TEST_PACKAGE_VERNUM_OLDEST);
+    }).shouldResolveTo(`/packages/${TEST_PACKAGE_IDENTIFIER}/${TEST_PACKAGE_VERNUM_OLDEST}`).after(namespaceIdentifierValidationBasic);
+
     var getPackageManifestSuccess = new subTest.Test(function() {
         return packages.getPackageManifest(TEST_PACKAGE_IDENTIFIER).then(function(manifest) {
             return Promise.resolve(manifest.identifier);
@@ -113,10 +119,16 @@ namespace("com.subnodal.subos.backend.packages.test", function(exports) {
     }).shouldResolveTo(TEST_PACKAGE_IDENTIFIER).after(getPackagePathSuccess);
 
     var getPackageManifestNonexistent = new subTest.Test(function() {
-        return packages.getPackageManifest("com.example.nonexistentpackage");
+        return packages.getPackageManifest("com.subnodal.subos.meta.nonexistentpackage");
     }).shouldReject().after(getPackagePathSuccess);
 
-    // TODO: Write more manifest tests, such as handling situation when manifest contains invalid JSON or doesn't exist
+    var getPackageManifestInvalid = new subTest.Test(function() {
+        return packages.getPackageManifest(TEST_PACKAGE_IDENTIFIER, TEST_PACKAGE_VERNUM_INVALID_MANIFEST);
+    }).shouldReject().after(getPackagePathSuccess);
+
+    var getPackageManifestFileNonexistent = new subTest.Test(function() {
+        return packages.getPackageManifest(TEST_PACKAGE_IDENTIFIER, TEST_PACKAGE_VERNUM_NONEXISTENT_MANIFEST);
+    }).shouldReject().after(getPackagePathSuccess);
 
     // It's quite hard to test bundled packages due to their output
 
@@ -146,8 +158,11 @@ namespace("com.subnodal.subos.backend.packages.test", function(exports) {
         getPackagePathModule,
         getPackagePathHighLevelModule,
         getPackagePathNonexistent,
+        getPackagePathOld,
         getPackageManifestSuccess,
         getPackageManifestNonexistent,
+        getPackageManifestInvalid,
+        getPackageManifestFileNonexistent,
         bundlePackageNonexistent
     };
 });
