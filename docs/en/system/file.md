@@ -18,6 +18,9 @@ error, if any.
 | `NOT_FILE`     | `-5` | The requested node is not a file                             |
 | `NOT_FOLDER`   | `-6` | The requested node is not a folder                           |
 
+## `file_exists`
+Given a node path as argument `path`, see whether a given node exists.
+
 ## `file_getInfo`
 Given a node path as argument `path`, get the associated information about the
 node. 
