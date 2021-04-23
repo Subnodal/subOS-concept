@@ -109,5 +109,5 @@ Action access for `com.subnodal.subos.startup`:
 If a user is being checked for their permissions, then their group permissions
 are checked, followed by their own permissions.
 
-If an application is being checked for their permissiosn, then their user's
+If an application is being checked for their permissions, then their user's
 permissions are checked first, followed by their own permissions.
