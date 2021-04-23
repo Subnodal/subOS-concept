@@ -32,6 +32,7 @@ namespace("com.subnodal.subos.backend.test", function(exports) {
 
     // Place tests here ─ each test package should be invoked through `addNamespaceTests`
     addNamespaceTests("com.subnodal.subos.backend.packages.test");
+    addNamespaceTests("com.subnodal.subos.backend.processes.test");
 
     window.addEventListener("load", function() {
         system.execute("arguments").then(function(args) {
@@ -62,6 +63,6 @@ namespace("com.subnodal.subos.backend.test", function(exports) {
 
                 subTest.runTestsOnWeb(tests);
             });
-        })
+        });
     });
 });

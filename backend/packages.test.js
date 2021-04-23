@@ -49,7 +49,7 @@ namespace("com.subnodal.subos.backend.packages.test", function(exports) {
                 console.log("Package artefacts exist, so they will be regenerated");
 
                 cleanUpPromise = system.execute("file_deleteFolder", {path: `/packages/${TEST_PACKAGE_IDENTIFIER}`});
-            } else {}
+            }
 
             cleanUpPromise = cleanUpPromise.then(function() {
                 return system.execute("file_createFolder", {path: `/packages/${TEST_PACKAGE_IDENTIFIER}`});
