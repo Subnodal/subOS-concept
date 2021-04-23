@@ -13,7 +13,7 @@
     ],
     "author": "Subnodal Technologies",
     "devDependencies": {
-        "electron": "^11.0.2"
+        "electron": "^11.4.3"
     },
     "dependencies": {
         "minimist": "^1.2.5"
