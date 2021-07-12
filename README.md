@@ -1,6 +1,6 @@
-# subOS
-Main repository for the components of subOS, an operating system built by
-Subnodal.
+# subOS Concept Design
+Main repository for the components of a subOS concept design, an operating system
+built by Subnodal.
 
 Licenced by the [Subnodal Open-Source Licence](LICENCE.md).
 
